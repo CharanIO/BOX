@@ -10,10 +10,13 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.2.0"
+    "@tauri-apps/api": "^1.2.0",
+    "gulp": "^4.0.2",
+    "pdfjs-dist": "^3.2.146"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.2",
+    "@types/node": "^18.11.18",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.8.2",
     "vite": "^4.0.0"

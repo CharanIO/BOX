@@ -5,7 +5,8 @@ def extrctinfo(pdfpath):
         pdf=PdfReader(f)
         information=pdf.metadata
         noofpages=len(pdf.pages)
-       # noofpages=pdf.getNumPages()
+        
+       
 
         txt = f"""
           Information about {pdfpath}: 
