@@ -28,7 +28,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.work
 // Load the PDF
 pdfjs.getDocument('src\\Rise_of_Augmented_Reality_Current_and_Future_Appli.pdf').promise.then((pdf) => {
   // Render the PDF on the canvas
-  pdf.getPage(1).then((page) => {
+  pdf.getPage(2).then((page) => {
     const viewport = page.getViewport({scale: 1});
     const context = canvas.getContext('2d');
     canvas.height = viewport.height;
