@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/tauri";
+// import { invoke } from "@tauri-apps/api/tauri";
 
 // let greetInputEl: HTMLInputElement | null;
 // let greetMsgEl: HTMLElement | null;
@@ -21,6 +21,15 @@ import { invoke } from "@tauri-apps/api/tauri";
 // });
 
 import * as pdfjs from 'pdfjs-dist';
+import {listen} from '@tauri-apps/api/event';
+import {convertFileSrc} from '@tauri-apps/api/tauri'
+
+listen('tauri://file-drop',event=>{
+  let url=(event.payload).toString();
+  console.log(url);
+  let convertedUrl= convertFileSrc(url);
+  console.log(convertedUrl);
+})
 
 // Get the canvas element
 const canvas = document.getElementById('pdf');
