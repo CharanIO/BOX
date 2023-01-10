@@ -65,7 +65,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "decorations": false,
+        "decorations": true,
         "height": 600,
         "resizable": true,
         "title": "box",
