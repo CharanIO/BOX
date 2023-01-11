@@ -38,13 +38,20 @@ pdfjs.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.work
 pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
   // Render the PDF on the canvas
   pdf.getPage(1).then((page) => {
-    const viewport = page.getViewport({scale: 0.5});
+    const viewport = page.getViewport({scale:2});
     const context = canvas.getContext('2d');
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    
+    var resolution =  2 ; // for example
+
+    canvas.height = resolution*viewport.height; //actual size
+    canvas.width = resolution*viewport.width;
+
+    canvas.style.height = viewport.height/2+"px"; //showing size will be smaller size
+    canvas.style .width = viewport.width/2+"px";
     var rendertask=page.render({
       canvasContext: context,
-      viewport: viewport
+      viewport: viewport,
+      transform:[resolution, 0, 0, resolution, 0, 0]
     });
     rendertask.promise.then(()=>{
       var img=document.createElement("img");
