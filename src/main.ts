@@ -38,6 +38,48 @@ pdfjs.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.work
 pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
   // Render the PDF on the canvas
   pdf.getPage(1).then((page) => {
+     // Get the operator list for the page
+    page.getOperatorList().then((optlist)=>{
+      console.log(optlist);
+      // Iterate through the operator list
+      for(var i=0;i<optlist.fnArray.length;i++){
+         // Check for image rendering operator
+        if(optlist.fnArray[i]===pdfjs.OPS.paintImageXObject|| optlist.fnArray[i] === pdfjs.OPS.paintInlineImageXObject)
+        {
+            // Extract the image data
+            var imagedata=optlist.argsArray[i][0];
+            page.objs.get(imagedata,(args)=>{
+              //console.log(args.data);
+              const data = new Uint8ClampedArray(args.width * args.height * 4);
+              let k = 0;
+              let i = 0;
+              while (i < args.data.length) {
+               data[k] = args.data[i]; // r
+               data[k + 1] = args.data[i + 1]; // g
+               data[k + 2] = args.data[i + 2]; // b
+               data[k + 3] = 255; // a
+       
+               i += 3;
+               k += 4;
+              }
+              console.log(data);
+              let canvas=document.createElement('canvas');
+              let ctx=canvas.getContext('2d');
+
+              const imgData = ctx.createImageData(args.width, args.height);
+              imgData.data.set(data);
+              ctx.putImageData(imgData, 0, 0);
+              document.body.appendChild(canvas);
+             
+
+            });
+            console.log(imagedata);
+        }
+
+      }
+
+      
+    });
     const viewport = page.getViewport({scale:2});
     const context = canvas.getContext('2d');
     
