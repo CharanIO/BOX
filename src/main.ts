@@ -19,10 +19,11 @@
 //     .querySelector("#greet-button")
 //     ?.addEventListener("click", () => greet());
 // });
-
+import * as sharp from 'sharp';
 import * as pdfjs from 'pdfjs-dist';
 import {listen} from '@tauri-apps/api/event';
 import {convertFileSrc} from '@tauri-apps/api/tauri'
+import {type,imgshrink} from './File'
 
 var convertedUrl:string;
 var data:[];
@@ -31,13 +32,43 @@ listen('tauri://file-drop',event=>{
   console.log(url);
   convertedUrl= convertFileSrc(url);
   console.log(convertedUrl);
-
-  const canvas = document.getElementById('pdf');
-pdfjs.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.worker.js";
-// Load the PDF "C:\\Users\\charan\\Downloads\\Juluri_Akhil_Kumar_Resume.pdf"
-pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
+  var extenstion=type(url);
+  if(extenstion=='pdf')
+  {
+    const canvas = document.getElementById('pdf');
+    pdfjs.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.worker.js";
+    pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
   // Render the PDF on the canvas
   pdf.getPage(1).then((page) => {
+    
+
+   
+  
+    // page.getTextContent().then(textContent => {
+    //   // Initialize a variable to store the text
+    //   console.log(textContent);
+    //   textContent.items.push({str: "This is my added text", fontName:"g_d0_f1",hasEOL:true, dir: "ltr", width: 13, height: 12, transform: [15, 0, 0, 15, 171.53, 745.54]});
+    //   let extractedText = '';
+    //   for(var i=0;i<textContent.items.length;i++)
+    //   {
+
+    //     if(textContent.items[i].str==="Rise of Augmented Reality: Current and Future")
+    //     {
+    //        textContent.items[i].str="hi this is charan";
+
+    //     }
+    //   }
+    //   // Iterate through the items of the text content object
+    //   for (let item of textContent.items) {
+    //     // Append the text to the variable
+    //     extractedText += item.str;
+    //   }
+    //   // Log the extracted text
+    //   console.log(extractedText);
+    // });
+
+
+  
      // Get the operator list for the page
     page.getOperatorList().then((optlist)=>{
       console.log(optlist);
@@ -49,8 +80,9 @@ pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
             // Extract the image data
             var imagedata=optlist.argsArray[i][0];
             page.objs.get(imagedata,(args)=>{
-              //console.log(args.data);
+              console.log(args);
               const data = new Uint8ClampedArray(args.width * args.height * 4);
+              console.log(data);
               let k = 0;
               let i = 0;
               while (i < args.data.length) {
@@ -62,13 +94,13 @@ pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
                i += 3;
                k += 4;
               }
-              console.log(data);
+              console.log(args.data);
               let canvas=document.createElement('canvas');
               let ctx=canvas.getContext('2d');
 
               const imgData = ctx.createImageData(args.width, args.height);
               imgData.data.set(data);
-              ctx.putImageData(imgData, 0, 0);
+              ctx.putImageData(imgData, 1, 1);
               document.body.appendChild(canvas);
              
 
@@ -96,6 +128,7 @@ pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
       transform:[resolution, 0, 0, resolution, 0, 0]
     });
     rendertask.promise.then(()=>{
+     
       var img=document.createElement("img");
       img.setAttribute('src',canvas.toDataURL('image/png'));
       document.body.appendChild(img);
@@ -104,7 +137,14 @@ pdfjs.getDocument(convertedUrl).promise.then((pdf) => {
      
     });
   });
-});
+    });
+  }
+  else if(extenstion=='jpeg'||extenstion=='png')
+  {
+    const meta=imgshrink(convertedUrl);
+    console.log(meta);
+  }
+  
 });
 
 
